@@ -1,16 +1,16 @@
 name: 📤 Descargar y Enviar Despacho
 
 on:
-  workflow_dispatch:  # Permite ejecutar manualmente
+  workflow_dispatch:  # Ejecutar manualmente
   schedule:
-    - cron: '30 12 * * *'  # Todos los días a las 12:30 UTC (~7:30am Lima)
+    - cron: '30 12 * * *'  # Todos los días a las 12:30 UTC (~7:30 AM Lima/Bogotá)
 
 jobs:
   enviar-archivo:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📁 Clonar repo
+    - name: 📁 Clonar el repositorio
       uses: actions/checkout@v3
 
     - name: 🐍 Configurar Python
@@ -19,12 +19,11 @@ jobs:
         python-version: '3.10'
 
     - name: 📦 Instalar dependencias
-      run: |
-        pip install requests python-dotenv
+      run: pip install requests python-dotenv
 
-    - name: 🚀 Ejecutar script
+    - name: 🚀 Ejecutar script Python
       env:
         GMAIL_USER: ${{ secrets.GMAIL_USER }}
         GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         GMAIL_TO: ${{ secrets.GMAIL_TO }}
-      run: python enviar_despacho.py
+      run: python scraping.py
