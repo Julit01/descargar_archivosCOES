@@ -1,25 +1,30 @@
-name: Descargar Anexo1 cada 15 minutos
+# .github/workflows/enviar_archivo.yml
+name: Descargar y enviar archivo
 
 on:
+  workflow_dispatch:  # Permite ejecutarlo manualmente desde GitHub
   schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+    - cron: '30 12 * * *'  # Todos los días a las 12:30 PM UTC (~7:30 AM Lima/Bogotá)
 
 jobs:
-  run-script:
+  enviar-archivo:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Clonar repositorio
-        uses: actions/checkout@v3
+    - name: 🧾 Clonar repositorio
+      uses: actions/checkout@v3
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: 🐍 Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Instalar dependencias
-        run: pip install requests
+    - name: 📦 Instalar dependencias
+      run: pip install requests
 
-      - name: Ejecutar script
-        run: python scraping.py
-  
+    - name: 📤 Ejecutar script para enviar el archivo
+      env:
+        GMAIL_USER: ${{ secrets.GMAIL_USER }}
+        GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        GMAIL_TO: ${{ secrets.GMAIL_TO }}
+      run: python enviar_despacho.py
