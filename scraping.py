@@ -36,7 +36,7 @@ gmail_pass = os.environ["GMAIL_APP_PASSWORD"]
 correo_destino = os.environ["GMAIL_TO"]
 
 msg = EmailMessage()
-msg['Subject'] = f"📎 Archivo Despacho {fecha}"
+msg['Subject'] = f"Archivo Despacho {fecha}"
 msg['From'] = gmail_user
 msg['To'] = correo_destino
 msg.set_content(f"Hola,\n\nAdjunto el archivo 'Anexo1_Despacho_{fecha}.xlsx' correspondiente al día {dia} de {mes_nombre} de {año}.\n\nSaludos.")
