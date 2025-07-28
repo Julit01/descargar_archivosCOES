@@ -1,17 +1,16 @@
-# .github/workflows/enviar_archivo.yml
-name: Descargar y enviar archivo
+name: 📤 Descargar y Enviar Despacho
 
 on:
-  workflow_dispatch:  # Permite ejecutarlo manualmente desde GitHub
+  workflow_dispatch:  # Permite ejecutar manualmente
   schedule:
-    - cron: '30 12 * * *'  # Todos los días a las 12:30 PM UTC (~7:30 AM Lima/Bogotá)
+    - cron: '30 12 * * *'  # Todos los días a las 12:30 UTC (~7:30am Lima)
 
 jobs:
   enviar-archivo:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 🧾 Clonar repositorio
+    - name: 📁 Clonar repo
       uses: actions/checkout@v3
 
     - name: 🐍 Configurar Python
@@ -20,9 +19,10 @@ jobs:
         python-version: '3.10'
 
     - name: 📦 Instalar dependencias
-      run: pip install requests
+      run: |
+        pip install requests python-dotenv
 
-    - name: 📤 Ejecutar script para enviar el archivo
+    - name: 🚀 Ejecutar script
       env:
         GMAIL_USER: ${{ secrets.GMAIL_USER }}
         GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
