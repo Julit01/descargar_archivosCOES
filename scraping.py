@@ -31,10 +31,23 @@ with open(nombre_archivo, "wb") as f:
 print(f"✅ Archivo descargado en: {nombre_archivo}")
 
 # Envío por correo
-gmail_user = os.environ["GMAIL_USER"]
-gmail_pass = os.environ["GMAIL_APP_PASSWORD"]
-correo_destino = os.environ["GMAIL_TO"]
+gmail_user = os.environ["operadorcontrolyunqui@gmail.com"]
+gmail_pass = os.environ["123OperadorRER123#"]
+correo_destino = os.environ["julio13.10.91@gmail.com"]
 
 msg = EmailMessage()
-msg['Subje]()
+msg['Subject'] = f"📎 Archivo Despacho {fecha}"
+msg['From'] = gmail_user
+msg['To'] = correo_destino
+msg.set_content(f"Hola,\n\nAdjunto el archivo 'Anexo1_Despacho_{fecha}.xlsx' correspondiente al día {dia} de {mes_nombre} de {año}.\n\nSaludos.")
 
+with open(nombre_archivo, 'rb') as f:
+    file_data = f.read()
+    file_name = os.path.basename(nombre_archivo)
+    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+
+with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+    smtp.login(gmail_user, gmail_pass)
+    smtp.send_message(msg)
+
+print("📧 Correo enviado con éxito.")
