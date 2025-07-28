@@ -19,6 +19,9 @@ jobs:
       - name: 📦 Instalar dependencias
         run: pip install requests
 
+      - name: 📄 Mostrar contenido del script
+        run: cat scraping.py
+
       - name: 🚀 Ejecutar script
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
