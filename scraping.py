@@ -31,9 +31,9 @@ with open(nombre_archivo, "wb") as f:
 print(f"✅ Archivo descargado en: {nombre_archivo}")
 
 # Envío por correo
-gmail_user = os.environ["operadorcontrolyunqui@gmail.com"]
-gmail_pass = os.environ["123OperadorRER123#"]
-correo_destino = os.environ["julio13.10.91@gmail.com"]
+gmail_user = os.environ["GMAIL_USER"]
+gmail_pass = os.environ["GMAIL_APP_PASSWORD"]
+correo_destino = os.environ["GMAIL_TO"]
 
 msg = EmailMessage()
 msg['Subject'] = f"📎 Archivo Despacho {fecha}"
