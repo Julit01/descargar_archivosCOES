@@ -50,6 +50,7 @@ Adjunto el archivo 'Anexo1_Despacho_{fecha}.xlsx' correspondiente al día {dia} 
 Saludos.
 """)
 
+
 # Adjuntar archivo
 with open(nombre_archivo, 'rb') as f:
     file_data = f.read()
