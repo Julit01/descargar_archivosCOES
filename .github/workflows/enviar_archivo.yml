@@ -1,30 +1,38 @@
-name: Enviar archivo COES por correo
+name: Descarga Diaria COES
 
 on:
-  workflow_dispatch:  # ejecutable manualmente desde GitHub
+  schedule:
+    - cron: '0 8 * * *'  # 3 AM Perú (8 AM UTC)
+  workflow_dispatch:  # Ejecución manual
 
 jobs:
-  enviar_despacho:
+  descargar-y-enviar:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - name: 🧾 Clonar el repositorio
+      - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: 🐍 Configurar Python
+      - name: Configurar Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
-      - name: 📦 Instalar dependencias
+      - name: Instalar dependencias
         run: pip install requests
 
-      - name: 📄 Mostrar contenido del script
-        run: cat scraping.py
-
-      - name: 🚀 Ejecutar script
+      - name: Ejecutar script COES
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           GMAIL_TO: ${{ secrets.GMAIL_TO }}
         run: python scraping.py
+
+      - name: Subir archivo como artifact (backup)
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: anexo-despacho-${{ github.run_id }}
+          path: descargas_directas/
+          retention-days: 3
