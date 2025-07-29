@@ -2,18 +2,16 @@ import os
 import requests
 import smtplib
 from email.message import EmailMessage
-from email.headerregistry import Address
-from email.utils import make_msgid
+from datetime import datetime
 
-# Configuración - Reemplaza con tus datos reales
-GMAIL_USER = "operadorcontrolyunqui@gmail.com"
- 
-GMAIL_PASS = "xhtn mjon xxvj ifnh"  # Cambiar esto
-DESTINATARIO = "julio13.10.91@gmail.com"  # Cambiar esto
+# Obtener credenciales de variables de entorno
+GMAIL_USER = os.environ['GMAIL_USER']
+GMAIL_PASS = os.environ['GMAIL_APP_PASSWORD']
+DESTINATARIO = os.environ['GMAIL_TO']
 
-# Fecha deseada
-fecha = "2025-01-12"
-fecha = fecha.replace("-", "")
+# Obtener fecha actual (formato YYYY-MM-DD)
+fecha_actual = datetime.now().strftime("%Y-%m-%d")
+fecha = fecha_actual.replace("-", "")
 dia = fecha[6:8]
 mes = fecha[4:6]
 año = fecha[:4]
@@ -26,42 +24,37 @@ meses = {
 mes_nombre = meses[mes]
 
 try:
-    # Construir URL y descargar archivo (tu código original)
+    # Construir URL y ruta de archivo
     url = f"https://www.coes.org.pe/portal/browser/download?url=Operación%2FPrograma%20de%20Operación%2FPrograma%20Diario%2F{año}%2F{mes}_{mes_nombre}%2FDía%20{dia}%2FAnexo1_Despacho_{fecha}.xlsx"
     
     carpeta = "descargas_directas"
     os.makedirs(carpeta, exist_ok=True)
     nombre_archivo = os.path.join(carpeta, f"Anexo1_Despacho_{fecha}.xlsx")
 
-    print(f"⏳ Descargando archivo...")
-    response = requests.get(url, timeout=10)
+    print(f"⏳ Descargando archivo de COES...")
+    response = requests.get(url, timeout=30)
     response.raise_for_status()
     
     with open(nombre_archivo, "wb") as f:
         f.write(response.content)
 
-    print(f"✅ Archivo descargado en: {nombre_archivo}")
+    print(f"✅ Archivo descargado: {nombre_archivo}")
 
-    # --- SOLUCIÓN PARA EL ERROR DE CODIFICACIÓN ---
+    # Configurar email
     msg = EmailMessage()
-    
-    # Configurar headers con codificación adecuada
-    msg['Subject'] = f"Archivo Despacho {fecha}"  # Eliminé emojis temporalmente
+    msg['Subject'] = f"Anexo1 Despacho COES {fecha_actual}"
     msg['From'] = GMAIL_USER
     msg['To'] = DESTINATARIO
     msg['Content-Type'] = 'text/plain; charset="utf-8"'
     
-    # Cuerpo del mensaje con caracteres especiales
-    cuerpo_mensaje = f"""
+    msg.set_content(f"""
     Hola,
 
-    Adjunto el archivo 'Anexo1_Despacho_{fecha}.xlsx' correspondiente al día {dia} de {mes_nombre} de {año}.
+    Adjunto el archivo Anexo1_Despacho_{fecha}.xlsx 
+    correspondiente al {dia} de {mes_nombre} de {año}.
 
-    Saludos.
-    """
-    
-    # Asegurar codificación UTF-8
-    msg.set_content(cuerpo_mensaje, charset='utf-8')
+    Descargado automáticamente desde COES.
+    """)
 
     # Adjuntar archivo
     with open(nombre_archivo, 'rb') as f:
@@ -70,7 +63,7 @@ try:
             file_data,
             maintype='application',
             subtype='vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            filename=os.path.basename(nombre_archivo)
+            filename=f"Anexo1_Despacho_{fecha}.xlsx"
         )
 
     # Enviar correo
@@ -80,10 +73,14 @@ try:
         smtp.send_message(msg)
     
     print("📧 Correo enviado con éxito!")
+    exit(0)  # Código de salida 0 = éxito
 
 except requests.exceptions.RequestException as e:
-    print(f"❌ Error al descargar el archivo: {e}")
+    print(f"❌ Error al descargar archivo: {str(e)}")
+    exit(1)
 except smtplib.SMTPException as e:
-    print(f"❌ Error al enviar el correo: {e}")
+    print(f"❌ Error al enviar correo: {str(e)}")
+    exit(2)
 except Exception as e:
     print(f"❌ Error inesperado: {str(e)}")
+    exit(3)
