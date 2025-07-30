@@ -27,4 +27,4 @@ jobs:
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-          DESTINATARIO: ${{ secrets.DESTINATARIO }}
+          GMAIL_TO: ${{ secrets.GMAIL_TO }}
