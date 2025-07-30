@@ -7,7 +7,7 @@ from email.message import EmailMessage
 # ✅ Leer variables desde el entorno
 GMAIL_USER = os.environ["GMAIL_USER"]
 GMAIL_PASS = os.environ["GMAIL_PASS"]
-DESTINATARIO = os.environ["DESTINATARIO"]
+GMAIL_TO = os.environ["GMAIL_TO"]
 
 # ✅ Obtener la fecha de AYER
 hoy = datetime.utcnow() #- timedelta(days=1)  # UTC porque GitHub Actions usa UTC
@@ -45,7 +45,7 @@ try:
     msg = EmailMessage()
     msg['Subject'] = f"Archivo Despacho {fecha}"
     msg['From'] = GMAIL_USER
-    msg['To'] = DESTINATARIO
+    msg['To'] = GMAIL_TO
 
     cuerpo = f"""
     Hola,
