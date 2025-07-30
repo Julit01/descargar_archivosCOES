@@ -1,38 +1,30 @@
-name: Descarga Diaria COES
+name: Scraping Diario
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # 3 AM Perú (8 AM UTC)
-  workflow_dispatch:  # Ejecución manual
+    - cron: '0 7 * * *'  # 3AM local (UTC-5) = 7AM UTC
+  workflow_dispatch:     # También permite ejecutar manualmente
 
 jobs:
-  descargar-y-enviar:
+  run-script:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      - name: Checkout código
+      - name: Clonar repositorio
         uses: actions/checkout@v3
 
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Instalar dependencias
-        run: pip install requests
+        run: |
+          pip install requests
 
-      - name: Ejecutar script COES
+      - name: Ejecutar script scraping.py
+        run: python scraping.py
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          GMAIL_TO: ${{ secrets.GMAIL_TO }}
-        run: python scraping.py
-
-      - name: Subir archivo como artifact (backup)
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: anexo-despacho-${{ github.run_id }}
-          path: descargas_directas/
-          retention-days: 3
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DESTINATARIO: ${{ secrets.DESTINATARIO }}
